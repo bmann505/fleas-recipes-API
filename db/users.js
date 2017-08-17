@@ -3,14 +3,14 @@ const express = require('express');
 const router = express.Router();
 
 function validUser(user) {
-  let validName = typeof user.name === 'string' && user.name.trim() !== '' && user.name != null;
+  let validName = typeof user.name === 'string' && user.name.trim() !== '';
   let validEmail = typeof user.email === 'string' && user.email.match(/([@])/g) != null;
-  let validPassword = typeof user.password === 'string' && user.email.trim() !== '';
+  let validPassword = typeof user.password === 'string' && user.email.trim() !== '' && user.password.length > 4;
   return validName && validEmail && validPassword;
 }
 
 router.post('/signup', (req, res) => {
-  console.log(req.body);
+  console.log(req.body.password.length);
   if (validUser(req.body)) {
     knex('user')
       .where('email', req.body.email)
