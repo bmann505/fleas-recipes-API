@@ -2,6 +2,9 @@ const knex = require('./connection')
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 
 function validNewUser(user) {
   let validName = typeof user.name === 'string' && user.name.trim() !== '';
@@ -23,7 +26,10 @@ router.post('/signup', (req, res) => {
             .insert(req.body).returning('*')
             .then(user => {
               delete user[0].password;
-              res.json(user);
+              let token = jwt.sign(user[0], process.env.TOKEN_SECRET)
+              res.json({
+                data: token
+              });
             })
         } else {
           res.json({
@@ -50,7 +56,10 @@ router.post('/login', (req, res) => {
         let match = bcrypt.compareSync(req.body.password, user[0].password);
         if (match) {
           delete user[0].password;
-          res.json(user);
+          let token = jwt.sign(user[0], process.env.TOKEN_SECRET)
+          res.json({
+            data: token
+          });
         }
       }
     })
