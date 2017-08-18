@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/bmann505/fleas-recipes-API#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
     "express": "^4.15.4",
