@@ -65,4 +65,32 @@ router.post('/login', (req, res) => {
     })
 })
 
-module.exports = router;;
+router.get('/users/:id', (req, res) => {
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.substring(7);
+    console.log('req', req.headers.authorization);
+    console.log('token', token);
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (decoded.id == req.params.id) {
+      knex('recipe')
+        .select('recipe.title', 'recipe.description', 'recipe.type', 'recipe.ingredients', 'recipe.prep_time', 'recipe.cook_time', 'recipe.rating')
+        .innerJoin('user_recipe', 'recipe.id', 'user_recipe.recipe_id')
+        .innerJoin('user', 'user.id', 'user_recipe.user_id')
+        .where('user.id', req.params.id)
+        .then(user => {
+          res.json(user);
+        })
+    } else {
+      res.status(401);
+      res.json({
+        error: 'Unauthorized'
+      });
+    }
+  } else {
+    res.json({
+      error: 'Unauthorized'
+    })
+  }
+})
+
+module.exports = router;

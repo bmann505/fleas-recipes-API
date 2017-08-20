@@ -13,6 +13,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use('/', users)
-
+app.use('/users', users)
 
 app.listen(port);
